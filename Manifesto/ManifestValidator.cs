@@ -188,7 +188,7 @@ namespace Manifesto
                 }    
             }
 
-            Task.Run(() =>
+            Task.Factory.StartNew(() =>
             {
                 _running = true;
                 _complete = false;

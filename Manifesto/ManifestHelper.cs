@@ -40,17 +40,12 @@ namespace Manifesto
         /// </summary>
         /// <param name="hashAlgorithm">A valid parameter for the <seealso cref="System.Security.Cryptography.HashAlgorithm"/>.<seealso cref="System.Security.Cryptography.HashAlgorithm.Create(string)"/> method.</param>
         /// <param name="filePath">The absolute path to the file.</param>
-        /// <param name="progress">An instance of <seealso cref="System.IProgress" /> to support progress reporting.</param>
         /// <param name="bufferSize">Overrides the size of the buffer used when calculating hashes.  The default buffer size is 128KB.</param>
-        public static async Task<String> GetHashAsync(String hashAlgorithm, String filePath, IProgress<long> progress = null, long bufferSize = 131072)
+        public static async Task<String> GetHashAsync(String hashAlgorithm, String filePath, long bufferSize = 131072)
         {
             var hashAlgorithmInstance = HashAlgorithm.Create(hashAlgorithm);
             if (hashAlgorithmInstance == null) { return null; }
-            if (!File.Exists(filePath))
-            {
-                if (progress != null) { progress.Report(100L); }
-                return String.Empty;
-            }
+            if (!File.Exists(filePath)) { return null; }
 
             long offset = 0;
             FileStream fs = null;
@@ -62,15 +57,14 @@ namespace Manifesto
             catch (Exception)
             {
                 // If an exception is thrown, it's likely that the file is in use.
-                if (progress != null) { progress.Report(100L); }
-                return String.Empty;
+                return null;
             }
 
             long filesize = fs.Length;
             double onePercent = filesize / 100D;
             byte[] buffer = new byte[bufferSize];
             long percentage = 0;
-            var work = await Task.Run(() =>
+            var work = await Task.Factory.StartNew(() =>
             {
                 while (fs.Read(buffer, 0, buffer.Length) > 0)
                 {
@@ -82,17 +76,12 @@ namespace Manifesto
                     }
                     offset += hashAlgorithmInstance.TransformBlock(buffer, 0, currentLength, buffer, 0);
                     long percentComplete = (long)Math.Round((fs.Position / onePercent), 0);
-                    if (percentage != percentComplete)
-                    {
-                        percentage = percentComplete;
-                        if (progress != null) { progress.Report(percentComplete); }
-                    }
+                    percentage = percentComplete;
                 }
 
                 fs.Close();
                 hashAlgorithmInstance.TransformFinalBlock(new Byte[0], 0, 0);
                 byte[] bHash = hashAlgorithmInstance.Hash;
-                if (progress != null) { progress.Report(100L); }
 
                 StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < bHash.Length; i++)
@@ -142,7 +131,7 @@ namespace Manifesto
         /// <returns></returns>
         public static async Task<Manifest> CreateManifest(String directory, String hashAlgorithm = null, String description = null)
         {
-            var work = await Task.Run(() =>
+            var work = await Task.Factory.StartNew(() =>
             {
                 List<ManifestEntry> entries = new List<ManifestEntry>();
                 var files = ManifestHelper.GetFiles(directory);
