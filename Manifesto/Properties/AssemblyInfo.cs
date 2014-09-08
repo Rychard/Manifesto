@@ -5,9 +5,9 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("Manifesto")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Manifesto allows developers to quickly and easily create file manifests that can be consumed programmatically.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Joshua Shearer")]
 [assembly: AssemblyProduct("Manifesto")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]

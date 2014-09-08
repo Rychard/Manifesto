@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>$author$</authors>
+    <owners>$author$</owners>
+    <projectUrl>https://github.com/Rychard/Manifesto</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+	<description>Manifesto allows developers to quickly and easily create file manifests that can be consumed programmatically.
+
+The created manifests contain basic information about the included files.  The only required data for a file is its name, though optionally,  a hash of the file (using any of the supported HashAlgorithms in the framework) and/or a network location where the file can obtained can be included as well.</description>
+    <summary>Manifesto allows developers to quickly and easily create file manifests that can be consumed programmatically.</summary>
+    <copyright>Copyright 2014</copyright>
+  </metadata>
+</package>
