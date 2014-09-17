@@ -61,9 +61,9 @@ namespace Manifesto
             }
 
             long filesize = fs.Length;
-            double onePercent = filesize / 100D;
+            //double onePercent = filesize / 100D;
             byte[] buffer = new byte[bufferSize];
-            long percentage = 0;
+            //long percentage = 0;
             var work = await Task.Factory.StartNew(() =>
             {
                 while (fs.Read(buffer, 0, buffer.Length) > 0)
@@ -75,8 +75,8 @@ namespace Manifesto
                         currentLength = (int)length;
                     }
                     offset += hashAlgorithmInstance.TransformBlock(buffer, 0, currentLength, buffer, 0);
-                    long percentComplete = (long)Math.Round((fs.Position / onePercent), 0);
-                    percentage = percentComplete;
+                    //long percentComplete = (long)Math.Round((fs.Position / onePercent), 0);
+                    //percentage = percentComplete;
                 }
 
                 fs.Close();
@@ -103,7 +103,16 @@ namespace Manifesto
         /// <param name="hashAlgorithm">A valid parameter for the <seealso cref="System.Security.Cryptography.HashAlgorithm"/>.<seealso cref="System.Security.Cryptography.HashAlgorithm.Create(string)"/> method.</param>
         public static ManifestEntry CreateManifestEntry(String rootDirectory, String relativeFilepath, String remoteLocation = null, String hashAlgorithm = null)
         {
-            String absolutePath = Path.Combine(rootDirectory, relativeFilepath);
+            String absolutePath;
+            if (String.IsNullOrWhiteSpace(rootDirectory))
+            {
+                absolutePath = relativeFilepath;
+            }
+            else
+            {
+                absolutePath = Path.Combine(rootDirectory, relativeFilepath);
+            }
+            
             if (!File.Exists(absolutePath)) { return null; }
 
             FileInfo fi = new FileInfo(absolutePath);
