@@ -3,6 +3,9 @@ Manifesto
 
 Manifest is a C# 4.0 class library that allows developers to create generic file manifest programmatically.
 
+Nuget package is available here:
+https://www.nuget.org/packages/Manifesto/
+
 
 Why do I need this?
 ==
