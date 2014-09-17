@@ -18,7 +18,7 @@ namespace Manifesto
         /// </summary>
         public event EventHandler ValidationStarted;
 
-        protected virtual void OnValidationStarted()
+        private void OnValidationStarted()
         {
             EventHandler handler = this.ValidationStarted;
             if (handler != null) { handler(this, EventArgs.Empty); }
@@ -29,7 +29,7 @@ namespace Manifesto
         /// </summary>
         public event EventHandler ValidationStopped;
 
-        protected virtual void OnValidationStopped()
+        private void OnValidationStopped()
         {
             EventHandler handler = this.ValidationStopped;
             if (handler != null) { handler(this, EventArgs.Empty); }
@@ -40,7 +40,7 @@ namespace Manifesto
         /// </summary>
         public event EventHandler ValidationCompleted;
 
-        protected virtual void OnValidationCompleted()
+        private void OnValidationCompleted()
         {
             EventHandler handler = this.ValidationCompleted;
             if (handler != null) { handler(this, EventArgs.Empty); }
@@ -51,7 +51,7 @@ namespace Manifesto
         /// </summary>
         public event EventHandler<ManifestValidatorProgressChangedEventArgs> ValidationProgressChanged;
 
-        protected virtual void OnValidationProgressChanged()
+        private void OnValidationProgressChanged()
         {
             EventHandler<ManifestValidatorProgressChangedEventArgs> handler = this.ValidationProgressChanged;
             if (handler != null)
@@ -235,10 +235,18 @@ namespace Manifesto
             if (File.Exists(localPath))
             {
                 path = localPath;
-                var hashTask = ManifestHelper.GetHashAsync(_manifest.HashAlgorithm, localPath);
-                hashTask.Wait();
-                var hash = hashTask.Result;
-                validHash = (entry.Hash == hash);
+                if (!String.IsNullOrWhiteSpace(entry.Hash))
+                {
+                    var hashTask = ManifestHelper.GetHashAsync(_manifest.HashAlgorithm, localPath);
+                    hashTask.Wait();
+                    var hash = hashTask.Result;
+                    validHash = (entry.Hash == hash);
+                }
+                else
+                {
+                    // If no hash was provided, always pass the hash check.
+                    validHash = true;
+                }
             }
 
             // Add the results to our collection.
